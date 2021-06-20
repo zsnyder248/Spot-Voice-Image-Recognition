@@ -2,6 +2,7 @@ import Estop
 import sys
 
 def main(argv):
+    isPoweredOn = False
     robot = initializeSpot(argv)
     if(robot == False):
         print("Error while initializing Spot. Exiting...")
@@ -19,12 +20,14 @@ def main(argv):
             spotEstop()
             break
         elif(command == "end"):
-            spotShutdown()
+            spotShutdown(robot)
             break
+        elif(command == "power"):
+            isPoweredOn = togglePower(robot, isPoweredOn)
         elif "spot" not in command:
             print("Command does not begin with spot. Spot doesn't know you're talking to him.\n")
         else:
-            selectCommand(command)
+            selectCommand(command, robot, isPoweredOn)
 
 def initializeSpot(argv):
     username = str(sys.argv[1])
@@ -59,36 +62,62 @@ def initializeSpot(argv):
     except:
         return False
 
+def togglePower(robot, isPoweredOn):
+    try:
+        if(isPoweredOn):
+            robot.power_off()
+            isPoweredOn = False
+        else:
+            robot.power_on()
+            isPoweredOn = True
+        return isPoweredOn
+    except:
+        return isPoweredOn
+
 def spotEstop():
     print("Spot EMERGENCY stop\n")
 
-def spotShutdown():
+def spotShutdown(robot):
     print("Spot shutdown\n")
+    robot.lease_client.return_lease(robot.lease)
+    robot.lease_keepalive.shutdown()
+    robot.lease_keepalive = None
+    robot.estop.estop_keep_alive.shutdown()
 
-def selectCommand(command):
+def selectCommand(command, robot, isPoweredOn):
     command = command.replace("spot ", "")
     print("Command: " + command + "\n")
     if "forward" in command:
-        spotForward()
+        spotForward(robot)
     elif "backward" in command:
-        spotBackward()
+        spotBackward(robot)
     elif "right" in command:
-        spotRight()
+        spotRight(robot)
     elif "left" in command:
-        spotLeft()
+        spotLeft(robot)
+    elif "sit" in command:
+        spotSit(robot)
+    elif "stand" in command:
+        spotStand(robot)
 
-def spotForward():
+def spotForward(robot):
     print("Spot moving forward\n")
 
-def spotBackward():
+def spotBackward(robot):
     print("Spot moving backward\n")
 
-def spotRight():
+def spotRight(robot):
     print("Spot turning left\n")
 
-def spotLeft():
+def spotLeft(robot):
     print("Spot turning right\n")
 
+def spotSit(robot):
+    print("Spot sitting\n")
+
+def spotStand(robot):
+    print("Spot standing\n")
+    blocking_stand(command_client, timeout_sec=10)
 
 
 if __name__ == '__main__':
