@@ -9,6 +9,8 @@ import bosdyn.geometry
 from bosdyn.client.image import ImageClient
 from bosdyn.client.robot_command import RobotCommandBuilder, RobotCommandClient, blocking_stand
 
+isMoving = False
+
 def main(argv):
     # username = str(sys.argv[2])
     # password = str(sys.argv[4])
@@ -58,48 +60,69 @@ def spotShutdown(robot):
     robot.endConnection()
 
 def selectCommand(command, robot):
+    isMoving = False
     command = command.replace("spot ", "")
     print("Command: " + command + "\n")
+    isMoving = True
     if "forward" in command:
-        spotForward(robot)
+        if "step forward" in command:
+            spotForward(robot, 1)
+        else:
+            spotForward(robot, 0)
     elif "backward" in command:
         spotBackward(robot)
     elif "right" in command:
-        spotRight(robot)
+        if "turn right" in command:
+            spotTurnRight(robot)
+        else:
+            spotMoveRight(robot)
     elif "left" in command:
-        spotLeft(robot)
+        if "turn left" in command:
+            spotTurnLeft(robot)
+        else:
+            spotMoveLeft(robot)
     elif "sit" in command:
         spotSit(robot)
     elif "stand" in command:
         spotStand(robot)
 
-def spotForward(robot):
-    print("Spot moving forward\n")
-    robot.genericMovement('W')
+def spotForward(robot, num):
+    if(num == 1):
+        print("Spot stepping forward\n")
+        robot.forward()
+    else:
+        while(True):
+            robot.forward()
+            if(isMoving == False):
+                break
 
 def spotBackward(robot):
     print("Spot moving backward\n")
-    robot.genericMovement('S')
+    robot.backward()
 
+def spotMoveRight(robot):
+    print("Spot moving to the right\n")
+    robot.moveRight()
 
-def spotRight(robot):
+def spotTurnRight(robot):
     print("Spot turning right\n")
-    robot.genericMovement('D')
+    robot.turnRight()
 
+def spotMoveLeft(robot):
+    print("Spot moving to the left\n")
+    robot.moveLeft()
 
-def spotLeft(robot):
+def spotTurnLeft(robot):
     print("Spot turning left\n")
-    robot.genericMovement('A')
-
+    robot.turnLeft()
 
 def spotSit(robot):
     print("Spot sitting\n")
-    robot.genericMovement('sit')
-
+    robot.sit()
 
 def spotStand(robot):
     print("Spot standing\n")
-    robot.genericMovement('stand')
+    robot.stand()
 
 
 if __name__ == '__main__':

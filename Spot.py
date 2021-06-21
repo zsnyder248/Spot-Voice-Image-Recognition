@@ -14,6 +14,10 @@ import bosdyn.client.util
 #Custom modules
 from Estop import Estop
 
+VELOCITY_BASE_SPEED = 2.0  # m/s
+VELOCITY_BASE_ANGULAR = 0.8  # rad/sec
+VELOCITY_CMD_DURATION = 0.6  # seconds
+
 class Spot():
 
     def __init__(self, username, password, spotIP):
@@ -93,26 +97,66 @@ class Spot():
         self.estop.estop_keep_alive.shutdown()
         return True
 
-
-    # Receive, parse, and execute a command as a string
-    def genericMovement(self, request):
-        # Set the default speed and timing for executing velocity commands
-        VELOCITY_BASE_SPEED = 2.0  # m/s
-        VELOCITY_BASE_ANGULAR = 0.8  # rad/sec
-        VELOCITY_CMD_DURATION = 0.6  # seconds
-        print("HI")
-        requestLibrary = {
-        'sit': RobotCommandBuilder.synchro_sit_command(params=spot_command_pb2.MobilityParams(locomotion_hint=spot_command_pb2.HINT_AUTO, stair_hint=0)), # SIT
-        'stand': RobotCommandBuilder.synchro_stand_command(params=spot_command_pb2.MobilityParams(locomotion_hint=spot_command_pb2.HINT_AUTO, stair_hint=0)), # STAND
-        'W': RobotCommandBuilder.synchro_velocity_command(v_x=VELOCITY_BASE_SPEED, v_y=0, v_rot=0), # FORWAWRD
-        'A': RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=VELOCITY_BASE_SPEED, v_rot=0), # LEFT
-        'S': RobotCommandBuilder.synchro_velocity_command(v_x=-VELOCITY_BASE_SPEED, v_y=0, v_rot=0), # BACKWARD
-        'D': RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=-VELOCITY_BASE_SPEED, v_rot=0), # RIGHT
-        'Q': RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=VELOCITY_BASE_ANGULAR), # TURN LEFT
-        'E': RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=-VELOCITY_BASE_ANGULAR) # TURN RIGHT
-    }
+    def forward(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=VELOCITY_BASE_SPEED, v_y=0, v_rot=0)
         try:
-            self._robot_command_client.robot_command_async(command=requestLibrary[request],end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def backward(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=-VELOCITY_BASE_SPEED, v_y=0, v_rot=0)
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def moveRight(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=-VELOCITY_BASE_SPEED, v_rot=0)
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def turnRight(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=-VELOCITY_BASE_ANGULAR)
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def moveLeft(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=VELOCITY_BASE_SPEED, v_rot=0)
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def turnLeft(self):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=VELOCITY_BASE_ANGULAR)
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def sit(self):
+        moveCommand = RobotCommandBuilder.synchro_sit_command(params=spot_command_pb2.MobilityParams(locomotion_hint=spot_command_pb2.HINT_AUTO, stair_hint=0))
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            return True
+        except:
+            return False
+
+    def stand(self):
+        moveCommand = RobotCommandBuilder.synchro_stand_command(params=spot_command_pb2.MobilityParams(locomotion_hint=spot_command_pb2.HINT_AUTO, stair_hint=0))
+        try:
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
             return True
         except:
             return False
