@@ -91,10 +91,9 @@ def spotForward(robot, num):
         print("Spot stepping forward\n")
         robot.forward()
     else:
-        while(True):
+        while(isMoving):
+            print("Spot is walking forward\n")
             robot.forward()
-            if(isMoving == False):
-                break
 
 def spotBackward(robot):
     print("Spot moving backward\n")
