@@ -1,4 +1,3 @@
-#Stephen Bowen 2021
 #System modules
 import time
 
