@@ -17,7 +17,7 @@ def main(argv):
     # hostname = str(sys.argv[5])
     print("HI")
     username = 'user'
-    password = 'h6mvzmpghunc'
+    password = 'dy8dtr33sv6p'
     hostname = '192.168.80.3'
     robot = Spot(username, password, hostname)
     robot.auth()
