@@ -6,6 +6,7 @@ import bosdyn.client.lease
 import bosdyn.client.util
 import bosdyn.geometry
 import time
+import math
 
 from bosdyn.client.image import ImageClient
 from bosdyn.client.robot_command import RobotCommandBuilder, RobotCommandClient, blocking_stand
@@ -87,9 +88,9 @@ def selectCommand(command, robot):
             spotToggleBackward(robot)
     elif "turn" in command:
         if "turn right" in command:
-            spotTurnRight(robot)
+            spotTurnRight(robot, (command.split("degrees")[0]).split(" ")[-2])
         elif "turn left" in command:
-            spotTurnLeft(robot) 
+            spotTurnLeft(robot, (command.split("degrees")[0]).split(" ")[-2])
     elif "right" in command: # Spot right
         if "step right" in command: # Spot step right
             spotStepRight(robot, 1)
@@ -114,7 +115,7 @@ def spotForwardDistance(robot, distance):
     moveForward = True
     try:
         print("Spot is walking forward\n")
-        robot.forward(distance/SPEED, SPEED)
+        robot.forward(float(distance)/SPEED, SPEED)
     except KeyboardInterrupt:
         moveForward = False  
 
@@ -131,7 +132,7 @@ def spotToggleForward(robot):
 
 def spotStepForward(robot, numSteps):
     print("Spot stepping forward\n")
-    robot.forward(1, numSteps, SPEED)
+    robot.forward(numSteps, SPEED)
 
 # End Forward Movements #
 
@@ -140,7 +141,7 @@ def spotBackwardDistance(robot, distance):
     moveBackward = True
     try:
         print("Spot is walking Backward\n")
-        robot.backward(distance/SPEED, SPEED)
+        robot.backward(float(distance)/SPEED, SPEED)
     except KeyboardInterrupt:
         moveBackward = False  
 
@@ -157,7 +158,7 @@ def spotToggleBackward(robot):
 
 def spotStepBackward(robot, numSteps):
     print("Spot stepping Backward\n")
-    robot.backward(1, numSteps, SPEED)
+    robot.backward(numSteps, SPEED)
 
 # End Backward Movements #
 
@@ -166,7 +167,7 @@ def spotRightDistance(robot, distance):
     moveRight = True
     try:
         print("Spot is walking Right\n")
-        robot.moveRight(distance/SPEED, SPEED)
+        robot.moveRight(float(distance)/SPEED, SPEED)
     except KeyboardInterrupt:
         moveRight = False  
 
@@ -185,9 +186,9 @@ def spotStepRight(robot, numSteps):
     print("Spot stepping Right\n")
     robot.moveRight(1, numSteps, SPEED)
 
-def spotTurnRight(robot):
-    print("Spot turning right\n")
-    robot.turnRight()
+def spotTurnRight(robot, degrees):
+    print("Spot turning right {0} degrees\n", degrees)
+    robot.turnRight(math.radians(int(degrees)), 1.0)
 
 # End Right Movements #
 
@@ -196,7 +197,7 @@ def spotLeftDistance(robot, distance):
     moveLeft = True
     try:
         print("Spot is walking Left\n")
-        robot.moveLeft(distance/SPEED, SPEED)
+        robot.moveLeft(float(distance)/SPEED, SPEED)
     except KeyboardInterrupt:
         moveLeft = False  
 
@@ -215,9 +216,9 @@ def spotStepLeft(robot, numSteps):
     print("Spot stepping Left\n")
     robot.moveLeft(1, numSteps, SPEED)
 
-def spotTurnLeft(robot):
-    print("Spot turning Left\n")
-    robot.turnLeft()
+def spotTurnLeft(robot, degrees):
+    print("Spot turning Left {0} degrees\n", degrees)
+    robot.turnLeft(math.radians(int(degrees)), 1.0)
 
 # End Left Movements #
 

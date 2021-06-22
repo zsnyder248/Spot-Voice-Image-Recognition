@@ -125,10 +125,10 @@ class Spot():
         except:
             return False
 
-    def turnRight(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=-VELOCITY_BASE_ANGULAR)
+    def turnRight(self, duration, speed):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=-speed)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
@@ -141,10 +141,10 @@ class Spot():
         except:
             return False
 
-    def turnLeft(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=VELOCITY_BASE_ANGULAR)
+    def turnLeft(self, duration, speed):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0,v_y=0,v_rot=speed)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
