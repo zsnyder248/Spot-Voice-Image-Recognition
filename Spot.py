@@ -12,10 +12,11 @@ import bosdyn.client.util
 
 #Custom modules
 from Estop import Estop
+pi = 3
 
-VELOCITY_BASE_SPEED = 2.0  # m/s
-VELOCITY_BASE_ANGULAR = 0.8  # rad/sec
-VELOCITY_CMD_DURATION = 0.6  # seconds
+VELOCITY_BASE_SPEED = 1.0  # m/s
+VELOCITY_BASE_ANGULAR = 1.0  # rad/sec
+VELOCITY_CMD_DURATION = 3.141592653  # seconds
 
 class Spot():
 
@@ -64,9 +65,11 @@ class Spot():
     def togglePower(self):
         try:
             if self._isPoweredOn:
+                print("Powering down\n")
                 self._robot.power_off()
                 self._isPoweredOn = False
             else:
+                print("Powering on\nThis will take a few seconds...\n")
                 self._robot.power_on()
                 self._isPoweredOn = True
             return self._isPoweredOn
@@ -96,26 +99,28 @@ class Spot():
         self.estop.estop_keep_alive.shutdown()
         return True
 
-    def forward(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=VELOCITY_BASE_SPEED, v_y=0, v_rot=0)
+    def forward(self, duration, speed):
+        print("Moving forward at {0} m/s for {1} seconds", speed, duration)
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=speed, v_y=0, v_rot=0)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
 
-    def backward(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=-VELOCITY_BASE_SPEED, v_y=0, v_rot=0)
+    def backward(self, duration, speed):
+        print("Moving backwards at {0} m/s for {1} seconds", speed, duration)
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=-speed, v_y=0, v_rot=0)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
 
-    def moveRight(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=-VELOCITY_BASE_SPEED, v_rot=0)
+    def moveRight(self, duration, speed):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=-speed, v_rot=0)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
@@ -128,10 +133,10 @@ class Spot():
         except:
             return False
 
-    def moveLeft(self):
-        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=VELOCITY_BASE_SPEED, v_rot=0)
+    def moveLeft(self, duration, speed):
+        moveCommand = RobotCommandBuilder.synchro_velocity_command(v_x=0, v_y=speed, v_rot=0)
         try:
-            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+VELOCITY_CMD_DURATION)
+            self._robot_command_client.robot_command_async(command=moveCommand,end_time_secs=time.time()+duration)
             return True
         except:
             return False
