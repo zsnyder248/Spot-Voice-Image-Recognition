@@ -1,4 +1,4 @@
-# SpotVoiceRecognition
+# SpotVoice/ImageRecognition
 ## Summer Research by Jeremy Breese and Zach Snyder with Dale Musser
 ## Goals
 1. Create a python application that runs on a raspberry pi that follows string commands
